@@ -1,23 +1,22 @@
-<!DOCTYPE html>
+html_content = """<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Digital - Siska & Bagus</title>
-    <!-- Google Fonts -->
+    <title>SIPERPAL - Sistem Pemantauan dan Perekapan Laporan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-color: #8A7051;
-            --secondary-color: #D4AF37;
-            --bg-light: #FAFAFA;
-            --bg-dark: #2C2621;
-            --text-main: #4A4A4A;
-            --text-light: #FFFFFF;
-            --accent: #E6DFD3;
+            --primary-color: #0056b3; /* Biru Dinas */
+            --secondary-color: #f8f9fa; /* Latar Terang */
+            --accent-color: #ffc107; /* Aksen Kuning (Opsional) */
+            --text-dark: #333333;
+            --text-light: #ffffff;
+            --footer-bg: #1a252f;
         }
 
         * {
@@ -28,147 +27,572 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-main);
-            background-color: var(--bg-light);
-            overflow-x: hidden;
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-dark);
+            background-color: #f4f7f6;
+            line-height: 1.6;
         }
 
-        /* Hero Section */
-        .hero {
-            position: relative;
-            height: 100vh;
+        /* --- Navbar --- */
+        nav {
+            background-color: var(--text-light);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            text-align: center;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070') no-repeat center center/cover;
-            color: var(--text-light);
-            padding: 20px;
+            padding: 15px 50px;
         }
 
-        .hero h1 {
-            font-family: 'Alex Brush', cursive;
-            font-size: 5rem;
-            margin-bottom: 10px;
-            color: var(--secondary-color);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .hero h2 {
-            font-family: 'Playfair Display', serif;
+        .logo-container img {
+            height: 50px;
+        }
+
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
             font-size: 1.5rem;
-            letter-spacing: 2px;
-            font-weight: 300;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        /* --- Global Section Styles --- */
+        .section-container {
+            padding: 100px 50px 50px; /* Top padding to account for fixed navbar */
+            min-height: 100vh;
+            display: none; /* Disembunyikan secara default, dikawal oleh JS */
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--text-light);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            color: var(--primary-color);
             margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            display: inline-block;
+            padding-bottom: 10px;
         }
 
-        .hero p {
-            font-size: 1rem;
-            letter-spacing: 2px;
+        .page-desc {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #666;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Beranda (Hero) Section --- */
+        #beranda {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0.7)), url('https://images.unsplash.com/photo-1541888082361-b541d279d460?q=80&w=2070') no-repeat center right/cover;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .hero-text {
+            font-size: 1.1rem;
             margin-bottom: 30px;
+            color: #555;
         }
 
-        .btn {
+        .btn-primary {
             display: inline-block;
             padding: 12px 30px;
             background-color: var(--primary-color);
             color: var(--text-light);
             text-decoration: none;
-            border-radius: 30px;
+            border-radius: 5px;
             font-weight: 600;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+            transition: background 0.3s;
+            border: none;
             cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
         }
 
-        .btn:hover {
-            background-color: transparent;
-            border-color: var(--text-light);
-            transform: translateY(-3px);
+        .btn-primary:hover {
+            background-color: #004494;
         }
 
-        /* Section General Styling */
-        section {
-            padding: 80px 20px;
-            text-align: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 2px;
-            background-color: var(--secondary-color);
-            margin: 15px auto 0;
-        }
-
-        /* Countdown Section */
-        .countdown-container {
-            background-color: var(--accent);
-            padding: 40px 20px;
-            border-radius: 15px;
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
+        /* --- Pendaftaran Section --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .countdown-box {
-            background: var(--text-light);
-            padding: 20px;
-            border-radius: 10px;
-            min-width: 100px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .countdown-box span {
-            display: block;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            font-family: 'Playfair Display', serif;
-        }
-
-        /* RSVP Form Section */
-        .rsvp-section {
-            background-color: #F4EFE6;
-            max-width: 100%;
-            width: 100%;
-        }
-
-        .rsvp-form {
-            max-width: 600px;
-            margin: 40px auto 0;
-            background: var(--text-light);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            text-align: left;
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            font-size: 0.9rem;
+            color: var(--text-dark);
         }
 
-        .form-group input, .form-group select, .form-Normally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: 'Roboto', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .submit-btn-container {
+            text-align: center;
+            margin-top: 20px;
+            grid-column: span 2;
+        }
+
+        /* --- Pemantauan Section --- */
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .upload-box {
+            border: 2px dashed #b0bec5;
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            background-color: #fafafa;
+            transition: border-color 0.3s;
+        }
+
+        .upload-box:hover {
+            border-color: var(--primary-color);
+        }
+
+        .upload-box i {
+            font-size: 3rem;
+            color: #90a4ae;
+            margin-bottom: 15px;
+        }
+
+        .upload-box h3 {
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn-outline {
+            display: inline-block;
+            padding: 10px 25px;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* --- Hasil Laporan Section --- */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: var(--footer-bg);
+            color: #d0d0d0;
+            padding: 40px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .footer-info {
+            max-width: 400px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .footer-logo img {
+            height: 40px;
+        }
+
+        .footer-title {
+            color: white;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .footer-contact {
+            list-style: none;
+        }
+
+        .footer-contact li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-contact i {
+            color: var(--accent-color);
+        }
+
+        .copyright {
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo-container">
+            <div style="background-color: var(--primary-color); color: white; padding: 5px 10px; border-radius: 5px; font-weight: bold;">JATIM</div>
+            <span class="logo-text">SIPERPAL</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" onclick="showSection('beranda')" id="link-beranda" class="active">BERANDA</a></li>
+            <li><a href="#" onclick="showSection('pendaftaran')" id="link-pendaftaran">PENDAFTARAN</a></li>
+            <li><a href="#" onclick="showSection('pemantauan')" id="link-pemantauan">PEMANTAUAN</a></li>
+            <li><a href="#" onclick="showSection('hasil')" id="link-hasil">HASIL LAPORAN</a></li>
+        </ul>
+    </nav>
+
+    <section id="beranda" class="section-container active">
+        <div class="hero-content">
+            <h1 class="hero-title">SELAMAT DATANG DI SIPERPAL</h1>
+            <h2 class="hero-subtitle">Sistem Pemantauan dan Perekapan Laporan Terintegrasi</h2>
+            <p class="hero-text">SIPERPAL hadir sebagai inovasi digital untuk mengoptimalkan efisiensi, transparansi, dan akuntabilitas di lingkungan Dinas Perumahan Rakyat, Kawasan Permukiman dan Cipta Karya Provinsi Jawa Timur.</p>
+            <p class="hero-text">Melalui pemantauan real-time dan rekapitulasi data yang terpusat, kami mendukung tata kelola proyek dan pelaporan yang lebih cerdas, cepat, dan terukur.</p>
+            <button class="btn-primary" onclick="showSection('pendaftaran')">Mulai Pendaftaran Proyek</button>
+        </div>
+    </section>
+
+    <section id="pendaftaran" class="section-container">
+        <div class="card">
+            <div style="text-align: center;"><h2 class="page-title">PENDAFTARAN</h2></div>
+            <p class="page-desc">Melakukan pengisian biodata kontraktor untuk mempermudah melakukan pengawasan yang ada di lapangan, untuk memonitoring laporan harian, mingguan dan bulanan pada setiap proyek.</p>
+            
+            <form id="formPendaftaran" onsubmit="handleRegistration(event)">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="namaProyek">Nama Proyek</label>
+                        <input type="text" id="namaProyek" required placeholder="Masukkan Nama Proyek">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="lokasiProyek">Lokasi Proyek</label>
+                        <input type="text" id="lokasiProyek" required placeholder="Alamat lengkap proyek">
+                    </div>
+                    <div class="form-group">
+                        <label for="nilaiKontrak">Nilai Kontrak (Rp)</label>
+                        <input type="number" id="nilaiKontrak" required placeholder="Cth: 1500000000">
+                    </div>
+                    <div class="form-group">
+                        <label for="masaKontrak">Masa Kontrak (Bulan)</label>
+                        <input type="number" id="masaKontrak" required placeholder="Cth: 6">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="namaKontraktor">Nama Kontraktor / Perusahaan</label>
+                        <input type="text" id="namaKontraktor" required placeholder="PT / CV Kontraktor Pelaksana">
+                    </div>
+                    <div class="submit-btn-container">
+                        <button type="submit" class="btn-primary">Submit Data Proyek</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section id="pemantauan" class="section-container">
+        <div class="card">
+            <div style="text-align: center;"><h2 class="page-title">INPUT DATA PROYEK</h2></div>
+            <p class="page-desc">Lakukan Input data untuk melakukan checking data proyek, masukan sesuai keterangan data yang ada pada file tersebut dalam bentuk PDF.</p>
+            
+            <div class="upload-section">
+                <div class="upload-box">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <h3>INPUT LAPORAN HARIAN PROYEK</h3>
+                    <p>Unggah file rekapitulasi harian proyek (.pdf)</p>
+                    <input type="file" id="fileHarian" class="file-input" accept=".pdf" onchange="updateFileName('fileHarian', 'labelHarian')">
+                    <label for="fileHarian" class="btn-outline" id="labelHarian">CLICK HERE TO UPLOAD</label>
+                </div>
+
+                <div class="upload-box">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <h3>INPUT LAPORAN MINGGUAN PROYEK</h3>
+                    <p>Unggah file progres mingguan proyek (.pdf)</p>
+                    <input type="file" id="fileMingguan" class="file-input" accept=".pdf" onchange="updateFileName('fileMingguan', 'labelMingguan')">
+                    <label for="fileMingguan" class="btn-outline" id="labelMingguan">CLICK HERE TO UPLOAD</label>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn-primary" onclick="simpanLaporan()">Simpan Dokumen Laporan</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="hasil" class="section-container">
+        <div class="card">
+            <div style="text-align: center;"><h2 class="page-title">CEK DATA PROYEK</h2></div>
+            <p class="page-desc">Lakukan pengecekan ulang data proyek yang telah di isi, agar tidak terjadi kesalahan data saat perekapan.</p>
+            
+            <div class="table-container">
+                <table id="tabelProyek">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Proyek</th>
+                            <th>Kontraktor</th>
+                            <th>Lokasi</th>
+                            <th>Status Laporan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataProyekBody">
+                        <tr>
+                            <td>1</td>
+                            <td>Pembangunan Asrama Polisi Tahap 2</td>
+                            <td>PT. Bangun Nusantara</td>
+                            <td>Surabaya</td>
+                            <td><span style="color: green; font-weight: bold;">Lengkap</span></td>
+                            <td><button class="btn-outline" style="padding: 5px 10px; margin-top: 0; font-size: 0.8rem;">Detail</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-info">
+            <div class="footer-logo">
+                <div style="background-color: var(--accent-color); color: var(--text-dark); padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 0.8rem;">PROV. JATIM</div>
+                <span class="footer-title">DINAS PERUMAHAN RAKYAT, KAWASAN PERMUKIMAN DAN CIPTA KARYA</span>
+            </div>
+            <p style="font-size: 0.9rem; margin-top: 10px;">
+                Jalan Gayung Kebonsari No.169, Kel. Gayungan<br>
+                Kec. Gayungan, Kota Surabaya, Jawa Timur, 60235
+            </p>
+        </div>
+        
+        <div>
+            <h3 style="color: white; margin-bottom: 15px; font-family: 'Montserrat', sans-serif;">Kontak Kami</h3>
+            <ul class="footer-contact">
+                <li><i class="fa-solid fa-phone"></i> +62 819 9635 4169</li>
+                <li><i class="fa-solid fa-phone-office"></i> (031) 8287275</li>
+                <li><i class="fa-solid fa-envelope"></i> dprkpck@jatimprov.go.id</li>
+            </ul>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2026 SIPERPAL - Sistem Pemantauan dan Perekapan Laporan Terintegrasi. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script>
+        // 1. Logika Navigasi Halaman (Single Page Application Behavior)
+        function showSection(sectionId) {
+            // Sembunyikan semua section
+            const sections = document.querySelectorAll('.section-container');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            // Tampilkan section yang dipilih
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update status aktif pada navbar
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => link.classList.remove('active'));
+            document.getElementById('link-' + sectionId).classList.add('active');
+            
+            // Scroll ke atas halaman saat pindah menu
+            window.scrollTo(0, 0);
+        }
+
+        // 2. Logika Form Pendaftaran Proyek
+        let projectCount = 1; // Untuk nomor urut di tabel
+
+        function handleRegistration(event) {
+            event.preventDefault(); // Cegah refresh halaman
+
+            // Ambil data dari form
+            const nama = document.getElementById('namaProyek').value;
+            const lokasi = document.getElementById('lokasiProyek').value;
+            const kontraktor = document.getElementById('namaKontraktor').value;
+
+            // Logika sederhana untuk menambah data ke tabel "Hasil Laporan"
+            const tbody = document.getElementById('dataProyekBody');
+            projectCount++;
+            
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${projectCount}</td>
+                <td>${nama}</td>
+                <td>${kontraktor}</td>
+                <td>${lokasi}</td>
+                <td><span style="color: orange; font-weight: bold;">Menunggu Laporan</span></td>
+                <td><button class="btn-outline" style="padding: 5px 10px; margin-top: 0; font-size: 0.8rem;">Detail</button></td>
+            `;
+            
+            tbody.appendChild(newRow);
+
+            alert('Data proyek berhasil didaftarkan! Silakan lanjut ke menu Pemantauan untuk mengunggah dokumen.');
+            document.getElementById('formPendaftaran').reset();
+            
+            // Otomatis pindah ke halaman pemantauan setelah submit
+            showSection('pemantauan');
+        }
+
+        // 3. Logika Upload File
+        function updateFileName(inputId, labelId) {
+            const input = document.getElementById(inputId);
+            const label = document.getElementById(labelId);
+            
+            if(input.files && input.files.length > 0) {
+                const fileName = input.files[0].name;
+                label.innerText = fileName;
+                label.style.backgroundColor = 'var(--primary-color)';
+                label.style.color = 'white';
+            } else {
+                label.innerText = 'CLICK HERE TO UPLOAD';
+                label.style.backgroundColor = 'transparent';
+                label.style.color = 'var(--primary-color)';
+            }
+        }
+        
+        function simpanLaporan() {
+            const harian = document.getElementById('fileHarian').files.length;
+            const mingguan = document.getElementById('fileMingguan').files.length;
+            
+            if(harian > 0 || mingguan > 0) {
+                alert('Dokumen laporan berhasil diunggah dan disimpan ke dalam sistem.');
+                showSection('hasil');
+            } else {
+                alert('Mohon unggah setidaknya satu dokumen (Harian/Mingguan) sebelum menyimpan.');
+            }
+        }
+    </script>
+</body>
+</html>
+"""
+
+with open("permodelan_siperpal.html", "w", encoding="utf-8") as file:
+    file.write(html_content)
