@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Digital - Siska & Bagus</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #8A7051;
+            --secondary-color: #D4AF37;
+            --bg-light: #FAFAFA;
+            --bg-dark: #2C2621;
+            --text-main: #4A4A4A;
+            --text-light: #FFFFFF;
+            --accent: #E6DFD3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070') no-repeat center center/cover;
+            color: var(--text-light);
+            padding: 20px;
+        }
+
+        .hero h1 {
+            font-family: 'Alex Brush', cursive;
+            font-size: 5rem;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .hero h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: transparent;
+            border-color: var(--text-light);
+            transform: translateY(-3px);
+        }
+
+        /* Section General Styling */
+        section {
+            padding: 80px 20px;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 2px;
+            background-color: var(--secondary-color);
+            margin: 15px auto 0;
+        }
+
+        /* Countdown Section */
+        .countdown-container {
+            background-color: var(--accent);
+            padding: 40px 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-box {
+            background: var(--text-light);
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 100px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .countdown-box span {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* RSVP Form Section */
+        .rsvp-section {
+            background-color: #F4EFE6;
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .rsvp-form {
+            max-width: 600px;
+            margin: 40px auto 0;
+            background: var(--text-light);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #DDD;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* Buku Tamu Section */
+        .guestbook-container {
+            max-width: 700px;
+            margin: 40px auto 0;
+            text-align: left;
+        }
+
+        .wishes-display {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #FFF;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .wish-card {
+            padding: 15px;
+            border-bottom: 1px solid #EEE;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .wish-card:last-child {
+            border-bottom: none;
+        }
+
+        .wish-name {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .wish-status {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        .status-hadir { background-color: #E2F0D9; color: #385723; }
+        .status-tidak { background-color: #FCE4D6; color: #C65911; }
+
+        .wish-text {
+            margin-top: 5px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        /* Music Floating Button */
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+        }
+
+        /* Animation Utilities */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-dark);
+            color: #AAA;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer strong {
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Music Controls -->
+    <div class="music-control" id="musicBtn" onclick="toggleMusic()">
+        🎵
+    </div>
+    <!-- Elemen Audio: Bisa diganti dengan link lagu Pop Jawa kekinian favorit Anda -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+    </audio>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <p>RESEPSI PERNIKAHAN</p>
+        <h1>Siska & Bagus</h1>
+        <h2>Kami Mengundang Anda ke Acara Kami</h2>
+        <p>Minggu, 12 Juli 2026</p>
+        <a href="#acara" class="btn">Buka Undangan</a>
+    </div>
+
+    <!-- Acara & Countdown Section -->
+    <section id="acara" class="reveal">
+        <h2 class="section-title">Menuju Hari Bahagia</h2>
+        <p>Waktu yang tersisa sebelum janji suci diikat:</p>
+        
+        <div class="countdown-container">
+            <div class="countdown-box">
+                <span id="days">00</span>
+                Hari
+            </div>
+            <div class="countdown-box">
+                <span id="hours">00</span>
+                Jam
+            </div>
+            <div class="countdown-box">
+                <span id="minutes">00</span>
+                Menit
+            </div>
+            <div class="countdown-box">
+                <span id="seconds">00</span>
+                Detik
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP Section -->
+    <section class="rsvp-section reveal" id="rsvp">
+        <h2 class="section-title">Konfirmasi Kehadiran (RSVP)</h2>
+        <p>Mohon konfirmasi kehadiran Anda untuk membantu persiapan acara kami.</p>
+
+        <form class="rsvp-form" id="rsvpForm" onsubmit="handleRSVP(event)">
+            <div class="form-group">
+                <label for="nama">Nama Lengkap</label>
+                <input type="text" id="nama" required placeholder="Masukkan nama Anda">
+            </div>
+            <div class="form-group">
+                <label for="kehadiran">Status Kehadiran</label>
+                <select id="kehadiran" required>
+                    <option value="" disabled selected>-- Pilih Status --</option>
+                    <option value="Hadir">Hadir</option>
+                    <option value="Tidak Hadir">Tidak Dapat Hadir</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="ucapan">Ucapan & Doa Restu</label>
+                <textarea id="ucapan" rows="4" placeholder="Tuliskan ucapan dan doa untuk kedua mempelai..."></textarea>
+            </div>
+            <button type="submit" class="btn" style="width: 100%;">Kirim Konfirmasi</button>
+        </form>
+
+        <!-- Tempat Paparan Ucapan / Guestbook -->
+        <div class="guestbook-container">
+            <h3 style="margin-top: 40px; font-family: 'Playfair Display', serif;">Buku Tamu</h3>
+            <div class="wishes-display" id="wishesDisplay">
+                <!-- Ucapan awal sebagai contoh -->
+                <div class="wish-card">
+                    <span class="wish-name">Budi Santoso</span>
+                    <span class="wish-status status-hadir">Hadir</span>
+                    <div class="wish-text">Selamat ya Siska dan Bagus! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah. Amin.</div>
+                </div>
+                <div class="wish-card">
+                    <span class="wish-name">Ratna Sari</span>
+                    <span class="wish-status status-tidak">Tidak Hadir</span>
+                    <div class="wish-text">Happy wedding! Maaf belum bisa hadir karena ada dinas luar kota. Bahagia selalu ya!</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 <strong>Pernikahan Siska & Bagus</strong>. All Rights Reserved.</p>
+        <p style="font-size: 0.75rem; margin-top: 5px; color: #666;">Model Desain Inspirasi: Siperpal Canva Site</p>
+    </footer>
+
+    <!-- JavaScript Programming Section -->
+    <script>
+        // 1. LOGIKA COUNTDOWN TIMER
+        // Atur tanggal pernikahan (Contoh: 12 Juli 2026 09:00:00)
+        const weddingDate = new Date("July 12, 2026 09:00:00").getTime();
+
+        const countdownInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            // Perhitungan waktu untuk Hari, Jam, Menit, dan Detik
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Tampilkan hasil ke dalam elemen HTML
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+
+            // Jika countdown selesai
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
+            }
+        }, 1000);
+
+
+        // 2. LOGIKA MUSIK LATAR (PLAY / PAUSE)
+        const music = document.getElementById("bgMusic");
+        const musicBtn = document.getElementById("musicBtn");
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicBtn.innerText = "🔇";
+                musicBtn.style.background = "#A34A4A";
+            } else {
+                music.play().catch(error => console.log("Autoplay diblokir oleh browser. Menunggu interaksi pengguna."));
+                musicBtn.innerText = "🎵";
+                musicBtn.style.background = "#8A7051";
+            }
+            isPlaying = !isPlaying;
+        }
+
+
+        // 3. LOGIKA FORM RSVP & BUKU TAMU (DOM Dinamis)
+        function handleRSVP(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            // Mengambil data dari input form
+            const nameInput = document.getElementById("nama").value;
+            const attendanceInput = document.getElementById("kehadiran").value;
+            const wishInput = document.getElementById("ucapan").value;
+
+            if(nameInput.trim() === "" || attendanceInput === "") {
+                alert("Mohon isi Nama dan Status Kehadiran.");
+                return;
+            }
+
+            // Membuat elemen kartu ucapan baru secara dinamis
+            const wishCard = document.createElement("div");
+            wishCard.classList.add("wish-card");
+
+            const wishName = document.createElement("span");
+            wishName.classList.add("wish-name");
+            wishName.innerText = nameInput;
+
+            const wishStatus = document.createElement("span");
+            wishStatus.classList.add("wish-status");
+            if (attendanceInput === "Hadir") {
+                wishStatus.classList.add("status-hadir");
+                wishStatus.innerText = "Hadir";
+            } else {
+                wishStatus.classList.add("status-tidak");
+                wishStatus.innerText = "Tidak Hadir";
+            }
+
+            const wishText = document.createElement("div");
+            wishText.classList.add("wish-text");
+            wishText.innerText = wishInput ? wishInput : "Selamat berbahagia!";
+
+            // Menggabungkan sub-elemen ke dalam wishCard
+            wishCard.appendChild(wishName);
+            wishCard.appendChild(wishStatus);
+            wishCard.appendChild(wishText);
+
+            // Memasukkan ucapan baru ke bagian paling atas daftar
+            const wishesDisplay = document.getElementById("wishesDisplay");
+            wishesDisplay.insertBefore(wishCard, wishesDisplay.firstChild);
+
+            // Reset form setelah berhasil dikirim
+            document.getElementById("rsvpForm").reset();
+            alert("Terima kasih! Konfirmasi dan ucapan Anda telah berhasil disimpan.");
+        }
+
+
+        // 4. ANIMASI MUNCUL SAAT DI-SCROLL (Intersection Observer API)
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>
