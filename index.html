@@ -1,145 +1,630 @@
-/**
- * SISTEM PEMANTAUAN DAN PEREKAPAN LAPORAN (SIPERPAL)
- * Dinas Perumahan Rakyat, Kawasan Permukiman dan Cipta Karya Provinsi Jawa Timur
- */
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIPERPAL - Sistem Pemantauan dan Perekapan Laporan</title>
+    <style>
+        /* ==========================================================================
+           1. GAYA GLOBAL & VARIABEL
+           ========================================================================== */
+        :root {
+            --primary-blue: #0056b3;
+            --dark-blue: #003d82;
+            --light-bg: #f8f9fa;
+            --text-color: #333333;
+            --border-color: #cccccc;
+            --white: #ffffff;
+        }
 
-const SIPERPAL = {
-    // State untuk menyimpan data sementara sebelum dikirim ke database/backend
-    database: {
-        proyek: [],
-        laporanHarian: [],
-        laporanMingguan: []
-    },
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
 
-    // Inisialisasi awal saat website dimuat
-    init() {
-        console.log("Memulai sistem SIPERPAL...");
-        this.bindNavigationEvents();
-        this.bindPendaftaranForm();
-        this.bindLaporanUploads();
-        this.loadSampleData(); 
-    },
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--white);
+            color: var(--text-color);
+        }
 
-    // Memuat data sampel untuk mempermudah pengujian sistem selama masa studi independent
-    loadSampleData() {
-        this.database.proyek.push({
-            id: "PRJ-001",
-            namaProyek: "Gedung Asrama Polisi Polrestabes Surabaya Tahap 2",
-            lokasi: "Surabaya",
-            nilaiKontrak: "Rp 15.000.000.000",
-            masaKontrak: "180 Hari Kerja",
-            kontraktor: "PT Wijaya Karya (Persero) Tbk"
-        });
-    },
+        /* ==========================================================================
+           2. HEADER & NAVIGASI
+           ========================================================================== */
+        header {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 
-    // Mengelola navigasi tab (Beranda, Pendaftaran, Pemantauan, Hasil Laporan)
-    bindNavigationEvents() {
-        const navLinks = document.querySelectorAll('.nav-link'); // Asumsi Anda menggunakan class 'nav-link' di HTML
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-placeholder {
+            width: 30px;
+            height: 35px;
+            background-color: #e0a800; /* Warna kuning lambang jatim */
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 22px;
+            letter-spacing: 1px;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .main-nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .main-nav a:hover, 
+        .main-nav a.active {
+            border-bottom: 2px solid var(--white);
+        }
+
+        /* ==========================================================================
+           3. STRUKTUR HALAMAN (SHOW/HIDE)
+           ========================================================================== */
+        main {
+            flex-grow: 1;
+            margin-top: 65px; /* Memberi ruang agar tidak tertutup header fixed */
+        }
+
+        .page-section {
+            display: none; /* Sembunyikan semua halaman secara default */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page-section.active {
+            display: block; /* Tampilkan hanya halaman aktif */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================================================
+           4. DETAIL KONTEN: HALAMAN BERANDA
+           ========================================================================== */
+        .beranda-hero {
+            position: relative;
+            height: 450px;
+            background: #002244 linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4));
+            /* Jika Anda punya gambar latar belakang proyek asli, masukkan di bawah ini: */
+            /* background-image: url('images/beranda_bg.jpg'); */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--white);
+            padding: 20px;
+        }
+
+        /* Simulasi background gedung/crane jika gambar belum ada */
+        .beranda-hero::before {
+            content: "[ LOGO / GAMBAR BACKGROUND PROYEK & CRANE ]";
+            font-size: 14px;
+            color: rgba(255,255,255,0.3);
+            margin-bottom: 20px;
+        }
+
+        .beranda-hero h1 {
+            font-size: 64px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            margin-bottom: 5px;
+        }
+
+        .beranda-hero p {
+            font-size: 16px;
+            letter-spacing: 2px;
+            font-weight: 300;
+            max-width: 800px;
+        }
+
+        .beranda-welcome {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .beranda-welcome h2 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .beranda-welcome h3 {
+            font-size: 22px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 25px;
+        }
+
+        .beranda-welcome p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            text-align: center;
+        }
+
+        /* ==========================================================================
+           5. DETAIL KONTEN: HALAMAN PENDAFTARAN
+           ========================================================================== */
+        .pendaftaran-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-header {
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            color: var(--primary-blue);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            font-size: 14px;
+            color: var(--primary-blue);
+            line-height: 1.5;
+            max-width: 800px;
+        }
+
+        .form-box {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 40px;
+            background-color: var(--white);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--dark-blue);
+        }
+
+        /* ==========================================================================
+           6. DETAIL KONTEN: HALAMAN PEMANTAUAN
+           ========================================================================== */
+        .pemantauan-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .pemantauan-image-mock {
+            flex: 1;
+            height: 500px;
+            background-color: #888; /* Representasi grayscale image di mockup */
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .pemantauan-content {
+            flex: 1.5;
+        }
+
+        .btn-pill {
+            display: inline-block;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 15px 50px;
+            border-radius: 30px;
+            font-size: 16px;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.3s;
+        }
+
+        .btn-pill:hover {
+            background-color: var(--dark-blue);
+        }
+
+        /* ==========================================================================
+           7. DETAIL KONTEN: HALAMAN HASIL LAPORAN
+           ========================================================================== */
+        .laporan-container {
+            max-width: 1100px;
+            margin: 0 auto 40px auto;
+        }
+
+        .laporan-banner-mock {
+            height: 25px;
+            background-color: var(--primary-blue);
+            margin-bottom: 3px;
+        }
         
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetPage = e.target.dataset.target; // cth: data-target="pendaftaran"
-                this.switchPage(targetPage);
+        .laporan-image-header {
+            height: 250px;
+            background-color: #a4c2eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+
+        .laporan-wrapper {
+            padding: 0 20px;
+        }
+
+        .laporan-menu-group {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        .laporan-item h3 {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        /* ==========================================================================
+           8. FOOTER GLOBAL
+           ========================================================================== */
+        footer {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 30px 20px;
+            margin-top: auto;
+            border-top: 5px solid #003d82;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            max-width: 600px;
+        }
+
+        .footer-logo-placeholder {
+            width: 60px;
+            height: 75px;
+            background-color: #e0a800;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .footer-info h4 {
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .footer-info p {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .contact-info {
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .contact-info p:first-child {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .map-placeholder {
+            width: 150px;
+            height: 90px;
+            background-color: #e5e5e5;
+            border: 1px solid #bbb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #666;
+            font-size: 10px;
+            text-align: center;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="logo-area">
+                <div class="footer-logo-placeholder" style="width:25px; height:30px;"></div> <span class="logo-text">SIPERPAL</span>
+            </div>
+            <nav class="main-nav">
+                <a href="#" id="nav-beranda" class="active" onclick="switchPage('beranda')">BERANDA</a>
+                <a href="#" id="nav-pendaftaran" onclick="switchPage('pendaftaran')">PENDAFTARAN</a>
+                <a href="#" id="nav-pemantauan" onclick="switchPage('pemantauan')">PEMANTAUAN</a>
+                <a href="#" id="nav-hasillaporan" onclick="switchPage('hasillaporan')">HASIL LAPORAN</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        <section id="page-beranda" class="page-section active">
+            <div class="beranda-hero">
+                <h1>SIPERPAL</h1>
+                <p>SISTEM PEMANTAUAN DAN PEREKAPAN LAPORAN</p>
+            </div>
+            <div class="beranda-welcome">
+                <h2>SELAMAT DATANG DI SIPERPAL</h2>
+                <h3>Sistem Pemantauan dan Perekapan Laporan Terintegrasi</h3>
+                <p>
+                    SIPERPAL hadir sebagai inovasi digital untuk mengoptimalkan efisiensi, transparansi, dan akuntabilitas di lingkungan Dinas Perumahan Rakyat, Kawasan Permukiman dan Cipta Karya Provinsi Jawa Timur.
+                    Melalui pemantauan real-time dan rekapitulasi data yang terpusat, kami mendukung tata kelola proyek dan pelaporan yang lebih cerdas, cepat, dan terukur.
+                </p>
+            </div>
+        </section>
+
+        <section id="page-pendaftaran" class="page-section">
+            <div class="pendaftaran-container">
+                <div class="section-header">
+                    <h2>PENDAFTARAN</h2>
+                    <p>Melakukan pengisian biodata kontraktor untuk mempermudah melakukan pengawasan yang ada di lapangan, untuk memmonitoring laporan harian, mingguan dan bulanan pada setiap proyek</p>
+                </div>
+                <div class="form-box">
+                    <form id="formPendaftaran" onsubmit="handleFormSubmit(event)">
+                        <div class="form-group">
+                            <label for="namaProyek">Nama Proyek</label>
+                            <input type="text" id="namaProyek" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lokasiProyek">Lokasi Proyek</label>
+                            <input type="text" id="lokasiProyek" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nilaiKontrak">Nilai Kontrak</label>
+                            <input type="text" id="nilaiKontrak" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="masaKontrak">Masa Kontrak</label>
+                            <input type="text" id="masaKontrak" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="namaKontraktor">Nama Kontraktor</label>
+                            <input type="text" id="namaKontraktor" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-pemantauan" class="page-section">
+            <div class="pemantauan-container">
+                <div class="pemantauan-image-mock">
+                    [ Gambar Grayscale Struktur Bangunan & Crane Berdiri Tegak ]
+                </div>
+                <div class="pemantauan-content">
+                    <div class="section-header">
+                        <h2>CEK DATA PROYEK</h2>
+                        <p>Lakukan pengecekan ulang data proyek yang telah di isi, agar tidak terjadi kesalahan data saat perekapan</p>
+                    </div>
+                    <a href="#" class="btn-pill" onclick="alert('Membuka Fitur Cek Data Proyek...')">CLICK HERE</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-hasillaporan" class="page-section">
+            <div class="laporan-container">
+                <div class="laporan-banner-mock"></div>
+                <div class="laporan-image-header">
+                    [ Gambar Berwarna Struktur Gedung & Tower Crane Atas ]
+                </div>
+                <div class="laporan-wrapper">
+                    <div class="section-header">
+                        <h2>INPUT DATA PROYEK</h2>
+                        <p>Lakukan Input data untuk melakukan checking data proyek, masukan sesuai keterangan data yang ada pada file tersebut dalam bentuk pdf.</p>
+                    </div>
+                    
+                    <div class="laporan-menu-group">
+                        <div class="laporan-item">
+                            <h3>INPUT LAPORAN HARIAN PROYEK</h3>
+                            <a href="#" class="btn-pill" style="margin-top:0;" onclick="alert('Membuka Input Laporan Harian...')">CLICK HERE</a>
+                        </div>
+                        <div class="laporan-item">
+                            <h3>INPUT LAPORAN MINGGUAN PROYEK</h3>
+                            <a href="#" class="btn-pill" style="margin-top:0;" onclick="alert('Membuka Input Laporan Mingguan...')">CLICK HERE</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="footer-logo-placeholder"></div> <div class="footer-info">
+                    <h4>DINAS PERUMAHAN RAKYAT, KAWASAN PERMUKIMAN DAN CIPTA KARYA</h4>
+                    <p>Jalan Gayung Kebonsari No.169, Kel. Gayungan</p>
+                    <p>Kec.Gayungan, Kota Surabaya, Jawa Timur, 60235</p>
+                </div>
+            </div>
+            <div class="footer-right">
+                <div class="contact-info">
+                    <p>Kontak Kami</p>
+                    <p>📞 +62 819 9635 4169</p>
+                    <p>📞 (031) 8287275</p>
+                    <p>✉️ dprkpck@jatimprov.go.id</p>
+                </div>
+                <div class="map-placeholder">
+                    [ Peta Lokasi Gayung Kebonsari ]
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /**
+         * Fungsi untuk mengatur perpindahan halaman aktif
+         * @param {string} pageId - ID halaman tujuan (beranda, pendaftaran, pemantauan, hasillaporan)
+         */
+        function switchPage(pageId) {
+            // 1. Sembunyikan semua section halaman dengan menghapus kelas 'active'
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
             });
-        });
-    },
 
-    // Fungsi untuk menyembunyikan/menampilkan halaman
-    switchPage(pageId) {
-        document.querySelectorAll('.page-section').forEach(page => {
-            page.style.display = 'none';
-        });
-        
-        const activePage = document.getElementById(pageId);
-        if (activePage) {
-            activePage.style.display = 'block';
-            console.log(`Beralih ke halaman: ${pageId}`);
-        }
-    },
+            // 2. Tampilkan section target berdasarkan ID yang dipilih
+            const targetSection = document.getElementById('page-' + pageId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
 
-    // Menangani aksi Submit pada halaman Pendaftaran
-    bindPendaftaranForm() {
-        const formSubmitBtn = document.getElementById('btnSubmitPendaftaran'); 
-        
-        if (formSubmitBtn) {
-            formSubmitBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.simpanDataProyek();
+            // 3. Reset status aktif pada menu navigasi di atas
+            const navLinks = document.querySelectorAll('.main-nav a');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
             });
-        }
-    },
 
-    // Logika untuk menyimpan input data proyek baru
-    simpanDataProyek() {
-        // Mengambil nilai dari input field
-        const namaProyek = document.getElementById('inputNamaProyek').value;
-        const lokasiProyek = document.getElementById('inputLokasiProyek').value;
-        const nilaiKontrak = document.getElementById('inputNilaiKontrak').value;
-        const masaKontrak = document.getElementById('inputMasaKontrak').value;
-        const namaKontraktor = document.getElementById('inputNamaKontraktor').value;
+            // 4. Tambahkan kelas 'active' pada tombol menu yang baru saja diklik
+            const activeNavLink = document.getElementById('nav-' + pageId);
+            if (activeNavLink) {
+                activeNavLink.classList.add('active');
+            }
 
-        // Validasi sederhana
-        if (!namaProyek || !lokasiProyek) {
-            alert("Nama Proyek dan Lokasi Proyek wajib diisi!");
-            return;
+            // 5. Scroll otomatis kembali ke atas halaman saat berganti tab
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        const proyekBaru = {
-            id: `PRJ-${Date.now()}`,
-            namaProyek,
-            lokasi: lokasiProyek,
-            nilaiKontrak,
-            masaKontrak,
-            kontraktor: namaKontraktor
-        };
+        /**
+         * Fungsi opsional untuk menangani data saat tombol submit formulir ditekan
+         */
+        function handleFormSubmit(event) {
+            event.preventDefault(); // Mencegah reload halaman bawaan form browser
+            
+            // Mengambil nilai inputan
+            const nama = document.getElementById('namaProyek').value;
+            const lokasi = document.getElementById('lokasiProyek').value;
+            const nilai = document.getElementById('nilaiKontrak').value;
+            const masa = document.getElementById('masaKontrak').value;
+            const kontraktor = document.getElementById('namaKontraktor').value;
 
-        this.database.proyek.push(proyekBaru);
-        alert(`Data proyek ${namaProyek} berhasil didaftarkan ke sistem SIPERPAL.`);
-        
-        // Reset form setelah sukses
-        document.getElementById('formPendaftaranUtama').reset();
-    },
-
-    // Menangani klik pada tombol "CLICK HERE" di halaman Input Data Proyek
-    bindLaporanUploads() {
-        const btnLaporanHarian = document.getElementById('btnLaporanHarian');
-        const btnLaporanMingguan = document.getElementById('btnLaporanMingguan');
-
-        if (btnLaporanHarian) {
-            btnLaporanHarian.addEventListener('click', () => {
-                this.triggerFileUpload('harian');
-            });
+            // Logika simulasi (Anda bisa menyambungkannya ke database/API nantinya)
+            alert(`Pendaftaran Proyek Berhasil Dikirim!\n\nNama Proyek: ${nama}\nKontraktor: ${kontraktor}`);
+            
+            // Reset form setelah sukses submit
+            document.getElementById('formPendaftaran').reset();
         }
-
-        if (btnLaporanMingguan) {
-            btnLaporanMingguan.addEventListener('click', () => {
-                this.triggerFileUpload('mingguan');
-            });
-        }
-    },
-
-    triggerFileUpload(jenisLaporan) {
-        // Simulasi input file PDF (disesuaikan dengan kebutuhan pengecekan data bentuk PDF)
-        console.log(`Membuka dialog upload PDF untuk laporan ${jenisLaporan}...`);
-        
-        // Logika spesifik pengunggahan bisa ditambahkan di sini
-        if (jenisLaporan === 'harian') {
-            console.log("Catatan sistem: Memeriksa parameter pengendalian volume pengecoran pada dokumen.");
-        }
-        
-        alert(`Fungsi upload Laporan ${jenisLaporan} (PDF) dipanggil.`);
-    },
-
-    // Menangani aksi Cek Data Proyek pada halaman Pemantauan
-    cekDataProyek() {
-        console.log("Merekap ulang data proyek untuk meminimalisir kesalahan...");
-        console.table(this.database.proyek);
-        alert("Pengecekan data proyek selesai. Silakan periksa konsol untuk detail rekapitulasi.");
-    }
-};
-
-// Menjalankan sistem SIPERPAL setelah seluruh elemen HTML (DOM) selesai dimuat
-document.addEventListener('DOMContentLoaded', () => {
-    SIPERPAL.init();
-});
+    </script>
+</body>
+</html>
